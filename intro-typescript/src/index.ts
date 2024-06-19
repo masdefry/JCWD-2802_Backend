@@ -188,3 +188,112 @@ const objRandom1: TPropA | TPropB = {
 
 
 // >>> Extend : Penjabaran Real Project
+
+// REAL IMPLEMENTATION TYPE & OBJECT
+
+type TRam = 4 | 8 | 16 | 32 | 64
+
+interface IProductLaptop{
+    id: number, 
+    name: string, 
+    ram: TRam
+}
+
+const productLaptop: IProductLaptop = {
+    id: 1, 
+    name: 'Asus', 
+    ram: 4
+}
+
+type TProgram = 'JCWD' | 'JCDM'
+
+interface IStudentPwd{
+    id: number, 
+    name: string, 
+    program: TProgram
+}
+
+const studentPwd = {
+    id: 1, 
+    name: 'Aboy', 
+    program: 'JCDM'
+}
+
+
+
+// ADVANCE TYPE 
+/*
+    Partial     : Partial<T>
+    Required    : Required<T>
+    Readonly    : Readonly<T>
+    Pick        : Pick<T, K>
+    Omit        : Omit<T, K>
+    Record      : Record<K, T>
+    Extract     : Extract<T, U>
+    Exclude     : Exclude<T, U>
+*/
+// Use Case: Kita Ingin Membuat Interface Baru dari Interface yang Sudah Ada Sebelumnya. 
+//           Tapi Kita Tidak diperbolehkan Merubah/Memodifikasi Interface yang Sebelumnya. 
+//           Kenapa Tidak Kita Ubah Saja Interface Sebelumnya? Karena Bisa Jadi Interfacenya
+//           dari Library atau Framework atau Mungkin dari Codebase Kita yang Sebelumnya. 
+//           Dan Apabila Merubah Codebase nya, Dapat Mempengaruhi Code2 Lainnya. 
+
+// >>>>> Partial    : Membuat Interface Menjadi Opsional 
+
+interface IObjCar{
+    id: number, 
+    name: string, 
+    brand: string, 
+    release: number 
+}
+
+const objCar: IObjCar = {
+    id: 1, 
+    name: 'Cretta', 
+    brand: 'Hyundai', 
+    release: 2022
+}
+
+const objCar1: Partial<IObjCar> = {
+    id: 2, 
+    name: 'Palisade',
+}
+
+// >>>>> Required   : Membuat Interface Menjadi Required
+
+// >>>>> Readonly 
+interface ISapa{
+    name: string, 
+    hobby: string
+}
+
+function Sapa(data: Readonly<ISapa>){
+    // Error, Karena Props `name` Readonly (Tidak Boleh Diubah2)
+    data.name = 'Abc'
+    return `Hello, My Name is ${name}. My Hobby is ${hobby}`
+}
+
+Sapa({
+    name: 'Aboy', 
+    hobby: 'Futsal'
+})
+
+// >>>>> Pick 
+
+interface ILecturer{
+    id: number, 
+    name: string, 
+    address: string 
+}
+
+const objDataLecturer: Pick<ILecturer, 'id' | 'name'> = {
+    id: 1, 
+    name: 'Defryan',
+}
+
+// >>>>> Omit : Pengecualian
+const objDataLecturer1: Omit<ILecturer, 'id'> = {
+    name: 'Salam', 
+    address: 'Pamulang'
+}
+
