@@ -54,7 +54,7 @@ app.post('/users', (req, res) => {
 app.put('/users/:emailId', (req, res) => {
     // Step-00 Get Request Data
     const { emailId } = req.params;
-    const { username, password, email } = req.body;
+    const { username, password } = req.body;
     // Step-01 Read Data JSON
     const data = JSON.parse(fs_1.default.readFileSync('./db/db.json', 'utf8'));
     console.log(data);
@@ -74,6 +74,28 @@ app.put('/users/:emailId', (req, res) => {
         data: null
     });
 });
+app.delete('/users/:emailId', (req, res) => {
+    // Step-00 Get Request Data
+    const { emailId } = req.params;
+    // Step-01 Read Data JSON
+    const data = JSON.parse(fs_1.default.readFileSync('./db/db.json', 'utf8'));
+    console.log(data);
+    // Step-02 Match Data dari `req.body` dengan Data dari `db.json`
+    data.users.forEach((item, index) => {
+        // Step-03 Delete Data
+        if (item.email === emailId) {
+            data.users.splice(index, 1);
+        }
+    });
+    // Step-04 Write Data JSON
+    fs_1.default.writeFileSync('./db/db.json', JSON.stringify(data));
+    // Step-05 Send Response
+    res.send({
+        message: 'Delete User Success!',
+        data: null
+    });
+});
 app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
+const arrBebas = ['Semangka', 'Anggur', 'Jeruk'];
