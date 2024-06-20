@@ -62,6 +62,37 @@ app.post('/users', (req: Request, res: Response) => {
   })
 })
 
+// PUT    : Harus Mengirimkan Semua Datanya
+// PATCH  : Mengirimkan Data yang Akan di Update Saja
+// username, email, password
+app.put('/users/:emailId', (req: Request, res: Response) => {
+  // Step-00 Get Request Data
+  const {emailId} = req.params
+  const {username, password, email} = req.body 
+
+  // Step-01 Read Data JSON
+  const data = JSON.parse(fs.readFileSync('./db/db.json', 'utf8'))
+  console.log(data)
+
+  // Step-02 Match Data dari `req.body` dengan Data dari `db.json`
+  data.users.forEach((item) => {
+    // Step-03 Update Data
+    if(item.email === emailId){
+      item.password = password
+      item.username = username
+    }
+  })
+
+  // Step-04 Write Data JSON
+  fs.writeFileSync('./db/db.json', JSON.stringify(data))
+
+  // Step-05 Send Response
+  res.send({
+    message: 'Update Profile Success!', 
+    data: null
+  })
+})
+
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
