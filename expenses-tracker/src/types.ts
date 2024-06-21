@@ -6,3 +6,7 @@ export interface IExpenses{
     category: string, 
     date: Date
 }
+
+export interface IError extends Error{
+    status: number
+}

@@ -29,7 +29,8 @@ app.post('/expenses', (req, res) => {
         // 03 Push Data dari `req.body` kedalam Data Expenses
         data.expenses.push({ id: Date.now(), title, nominal, type, category, date });
         // 04 
-        fs.writeFileSync('./db/db.json', JSON.stringify(data));
+        // fs.writeFileSync('./db/db.json', JSON.stringify(data))
+        (0, fileSystem_1.writeFileSync)(data);
         // 05
         res.status(201).send({
             error: false,

@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express';
-import { readFileSync } from './utils/fileSystem';
+import { readFileSync, writeFileSync } from './utils/fileSystem';
 import { IExpenses } from './types';
+import { IError } from './types';
 
 const app: Express = express();
 // [WAJIB!] Initialize Body Parser: Supaya Dapat Mengambil Request Data dari Body
@@ -34,7 +35,8 @@ app.post('/expenses', (req: Request, res: Response) => {
     )
 
     // 04 
-    fs.writeFileSync('./db/db.json', JSON.stringify(data))
+    // fs.writeFileSync('./db/db.json', JSON.stringify(data))
+    writeFileSync(data)
 
     // 05
     res.status(201).send({
@@ -45,7 +47,7 @@ app.post('/expenses', (req: Request, res: Response) => {
     // error: { message: 'Data Must be Complete!' }
     res.status(500).send({
       error: true, 
-      message: error.message
+      message: (error as IError).message
     })
   }
 })
@@ -66,7 +68,7 @@ app.get('/expenses/:id', (req: Request, res: Response) => {
       data: expenseDetail
     })
   } catch (error) { // error: {status: 404, message: 'Expense Not Found!'}
-    const status: number = (error as Error).status
+    const status: number = (error as IError).status
     res.status(status || 500).send({
       error: true, 
       message: (error as Error).message
