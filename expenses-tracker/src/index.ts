@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from 'express';
-import fs from 'fs';
+import { readFileSync } from './utils/fileSystem';
+import { IExpenses } from './types';
 
 const app: Express = express();
 // [WAJIB!] Initialize Body Parser: Supaya Dapat Mengambil Request Data dari Body
@@ -25,7 +26,7 @@ app.post('/expenses', (req: Request, res: Response) => {
     }
 
     // 02 Data Isi Keseluruhan dari `db.json`
-    const data = JSON.parse(fs.readFileSync('./db/db.json', 'utf-8'))
+    const data = readFileSync()
     
     // 03 Push Data dari `req.body` kedalam Data Expenses
     data.expenses.push(
@@ -45,6 +46,30 @@ app.post('/expenses', (req: Request, res: Response) => {
     res.status(500).send({
       error: true, 
       message: error.message
+    })
+  }
+})
+
+app.get('/expenses/:id', (req: Request, res: Response) => {
+  try {
+    const {id} = req.params// {id: xxx}
+
+    const data = readFileSync()
+
+    const expenseDetail = data.expenses.filter((item: IExpenses) => item.id === parseInt(id))
+
+    if(expenseDetail.length === 0) throw {status: 404, message: 'Expense Not Found!'}
+
+    res.status(200).send({
+      error: false, 
+      message: 'Get Expense Detail Success!', 
+      data: expenseDetail
+    })
+  } catch (error) { // error: {status: 404, message: 'Expense Not Found!'}
+    const status: number = (error as Error).status
+    res.status(status || 500).send({
+      error: true, 
+      message: (error as Error).message
     })
   }
 })

@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const fs_1 = __importDefault(require("fs"));
+const fileSystem_1 = require("./utils/fileSystem");
 const app = (0, express_1.default)();
 // [WAJIB!] Initialize Body Parser: Supaya Dapat Mengambil Request Data dari Body
 app.use(express_1.default.json());
@@ -25,11 +25,11 @@ app.post('/expenses', (req, res) => {
             throw new Error('Data Must be Complete!');
         }
         // 02 Data Isi Keseluruhan dari `db.json`
-        const data = JSON.parse(fs_1.default.readFileSync('./db/db.json', 'utf-8'));
+        const data = (0, fileSystem_1.readFileSync)();
         // 03 Push Data dari `req.body` kedalam Data Expenses
         data.expenses.push({ id: Date.now(), title, nominal, type, category, date });
         // 04 
-        fs_1.default.writeFileSync('./db/db.json', JSON.stringify(data));
+        fs.writeFileSync('./db/db.json', JSON.stringify(data));
         // 05
         res.status(201).send({
             error: false,
@@ -39,6 +39,27 @@ app.post('/expenses', (req, res) => {
     catch (error) {
         // error: { message: 'Data Must be Complete!' }
         res.status(500).send({
+            error: true,
+            message: error.message
+        });
+    }
+});
+app.get('/expenses/:id', (req, res) => {
+    try {
+        const { id } = req.params; // {id: xxx}
+        const data = (0, fileSystem_1.readFileSync)();
+        const expenseDetail = data.expenses.filter((item) => item.id === parseInt(id));
+        if (expenseDetail.length === 0)
+            throw { status: 404, message: 'Expense Not Found!' };
+        res.status(200).send({
+            error: false,
+            message: 'Get Expense Detail Success!',
+            data: expenseDetail
+        });
+    }
+    catch (error) { // error: {status: 404, message: 'Expense Not Found!'}
+        const status = error.status;
+        res.status(status || 500).send({
             error: true,
             message: error.message
         });
