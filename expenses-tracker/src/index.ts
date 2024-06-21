@@ -1,7 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import { readFileSync, writeFileSync } from './utils/fileSystem';
-import { IExpenses } from './types';
-import { IError } from './types';
+import { IExpenses, IError } from './types';
 
 const app: Express = express();
 // [WAJIB!] Initialize Body Parser: Supaya Dapat Mengambil Request Data dari Body
@@ -73,6 +72,30 @@ app.get('/expenses/:id', (req: Request, res: Response) => {
       error: true, 
       message: (error as Error).message
     })
+  }
+})
+
+app.get('/expenses-total', (req: Request, res: Response) => {
+  try {
+    const {startDate, endDate} = req.query
+
+    const data = readFileSync()
+
+    const totalExpenses = data.expenses.reduce((accumulator: number, item: any) => {
+      if(startDate && endDate){
+        if(item.date >= startDate && item.date <= endDate) return accumulator += parseInt(item.nominal)
+      }
+    }, 0)
+    
+    res.status(200).send({
+      error: false, 
+      message: 'Get Total Expenses Success!', 
+      data: {
+        totalExpenses
+      }
+    })
+  } catch (error) {
+    console.log(error)
   }
 })
 

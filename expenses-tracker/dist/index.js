@@ -66,6 +66,28 @@ app.get('/expenses/:id', (req, res) => {
         });
     }
 });
+app.get('/expenses-total', (req, res) => {
+    try {
+        const { startDate, endDate } = req.query;
+        const data = (0, fileSystem_1.readFileSync)();
+        const totalExpenses = data.expenses.reduce((accumulator, item) => {
+            if (startDate && endDate) {
+                if (item.date >= startDate && item.date <= endDate)
+                    return accumulator += parseInt(item.nominal);
+            }
+        }, 0);
+        res.status(200).send({
+            error: false,
+            message: 'Get Total Expenses Success!',
+            data: {
+                totalExpenses
+            }
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
 app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
