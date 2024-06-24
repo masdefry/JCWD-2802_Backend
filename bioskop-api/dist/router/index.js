@@ -7,5 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const router = (0, express_1.Router)();
 const AuthRouter_1 = __importDefault(require("./AuthRouter"));
+const MovieRouter_1 = __importDefault(require("./MovieRouter"));
 router.use('/auth', AuthRouter_1.default);
+router.use('/movies', MovieRouter_1.default);
 exports.default = router;

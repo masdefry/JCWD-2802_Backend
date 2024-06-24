@@ -1,6 +1,24 @@
+'use client';
 import Link from 'next/link';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
+  const [movies, setMovies] = useState([])
+
+  const onGetMovies = async() => {
+    try {
+      const res = await axios.get('http://localhost:5000/movies/')
+      setMovies(res.data.data)
+    } catch (error) {
+      
+    }
+  }
+
+  useEffect(() => {
+    onGetMovies()
+  }, [])
+
   return (
     <main className='p-10'>
       <section>
@@ -22,53 +40,41 @@ export default function Home() {
       </section>
       <section className='py-5'>
         <div className='grid grid-cols-12 gap-5'>
-          <div className='card bg-base-100 shadow-xl col-span-3'>
-            <figure><img src='https://statik.tempo.co/data/2023/12/13/id_1262844/1262844_720.jpg' alt='Movie_Poster' /></figure>
-            <div className='card-body'>
-              <h2 className='card-title'>Agak Laen</h2>
-              <p>Description</p>
-              <h2 className='font-bold'>
-                Status
-              </h2>
-              <div className='flex gap-3'>
-                <div className='bg-green-500 text-white px-2 py-1 rounded-md'>
-                  On Showing
+          {
+            movies?.map((item, index) => {
+              return (
+                <div className='card bg-base-100 shadow-xl col-span-3'>
+                  <figure><img src={item?.image_url} alt='Movie_Poster' /></figure>
+                  <div className='card-body'>
+                    <h2 className='card-title'>{item?.title}</h2>
+                    <p>Description</p>
+                    <h2 className='font-bold'>
+                      Status
+                    </h2>
+                    <div className='flex gap-3'>
+                      <div className='bg-green-500 text-white px-2 py-1 rounded-md'>
+                        {item?.status}
+                      </div>
+                    </div>
+                    {/* <h2 className='font-bold mt-3'>
+                      Select Time 
+                    </h2>
+                    <div className='flex gap-3'>
+                      <div className='bg-gray-300 text-black p-1 rounded-md'>
+                        09:00
+                      </div>
+                      <div className='bg-gray-300 text-black p-1 rounded-md'>
+                        10:00
+                      </div>
+                    </div> */}
+                    {/* <div className='card-actions justify-end'>
+                      <button className='btn bg-yellow-600 text-white hover:text-black'>Buy Now</button>
+                    </div> */}
+                  </div>
                 </div>
-              </div>
-              {/* <h2 className='font-bold mt-3'>
-                Select Time 
-              </h2>
-              <div className='flex gap-3'>
-                <div className='bg-gray-300 text-black p-1 rounded-md'>
-                  09:00
-                </div>
-                <div className='bg-gray-300 text-black p-1 rounded-md'>
-                  10:00
-                </div>
-              </div> */}
-              {/* <div className='card-actions justify-end'>
-                <button className='btn bg-yellow-600 text-white hover:text-black'>Buy Now</button>
-              </div> */}
-            </div>
-          </div>
-          <div className='card bg-base-100 shadow-xl col-span-3'>
-            <figure><img src='https://statik.tempo.co/data/2023/12/13/id_1262844/1262844_720.jpg' alt='Movie_Poster' /></figure>
-            <div className='card-body'>
-              <h2 className='card-title'>Agak Laen</h2>
-              <p>Description</p>
-              <h2 className='font-bold'>
-                Status
-              </h2>
-              <div className='flex gap-3'>
-                <div className='bg-gray-300 text-black px-2 py-1 rounded-md'>
-                  Upcoming
-                </div>
-              </div>
-              {/* <div className='card-actions justify-end'>
-                <button className='btn bg-yellow-600 text-white hover:text-black'>Buy Now</button>
-              </div> */}
-            </div>
-          </div>
+              )
+            })
+          }
         </div>
       </section>
     </main>
