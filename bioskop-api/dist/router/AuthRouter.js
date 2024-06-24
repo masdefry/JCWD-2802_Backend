@@ -28,5 +28,5 @@ const express_1 = require("express");
 const router = (0, express_1.Router)();
 const AuthController = __importStar(require("../controller/auth/AuthController"));
 router.post('/register', AuthController.RegisterUser);
-router.get('/auth', AuthController.LoginUser);
+router.post('/auth', AuthController.LoginUser);
 exports.default = router;

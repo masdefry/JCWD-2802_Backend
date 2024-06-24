@@ -33,7 +33,7 @@ const RegisterUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             if (item.email === email)
                 throw { status: 400, message: 'Email Already Exist!' };
         });
-        data.users.push({ email, username, password });
+        data.users.push({ uid: Date.now(), email, username, password, role: 'USER' });
         fs_1.default.writeFileSync('./src/db/db.json', JSON.stringify(data));
         res.status(201).send({
             error: false,
@@ -50,10 +50,39 @@ const RegisterUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.RegisterUser = RegisterUser;
-const LoginUser = () => __awaiter(void 0, void 0, void 0, function* () {
+const LoginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // Step-01 Get Data from req.body
+        const { usernameOrEmail, password } = req.body;
+        console.log(usernameOrEmail, password);
+        // Step-02 Read from db.json
+        const data = JSON.parse(fs_1.default.readFileSync('./src/db/db.json', 'utf-8'));
+        // Step-03 Validasi: Menyamakan Data
+        // Hasil .find akan mengembalikan data berbentuk object apabila data ditemukan
+        // dan akan mengembalikan data bernilai undfined apabila data tidak ditemukan
+        const findUser = data.users.find((item) => {
+            return ((item.email === usernameOrEmail || item.username === usernameOrEmail) && item.password === password);
+        });
+        // Step-04 Send Response
+        if (findUser === undefined)
+            return res.status(401).send({
+                error: true,
+                message: 'Login Failed!',
+                data: {}
+            });
+        if (findUser)
+            return res.status(200).send({
+                error: false,
+                message: 'Login Success!',
+                data: {
+                    uid: findUser.uid,
+                    role: findUser.role,
+                    username: findUser.username
+                }
+            });
     }
     catch (error) {
+        console.log(error);
     }
 });
 exports.LoginUser = LoginUser;

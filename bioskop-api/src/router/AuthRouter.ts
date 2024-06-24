@@ -6,7 +6,7 @@ const router = Router()
 import * as AuthController from '../controller/auth/AuthController';
 
 router.post('/register', AuthController.RegisterUser)
-router.get('/auth', AuthController.LoginUser)
+router.post('/auth', AuthController.LoginUser)
 
 export default router
 
