@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Layer Architecture 03
 const express_1 = require("express");
 const router = (0, express_1.Router)();
-const AuthController = __importStar(require("../controller/AuthController"));
+const AuthController = __importStar(require("../controller/auth/AuthController"));
 router.post('/register', AuthController.RegisterUser);
 router.get('/auth', AuthController.LoginUser);
 exports.default = router;
