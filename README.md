@@ -38,6 +38,10 @@ Hello, Student(s) JCWD-2802!
 
                 npm i -D concurrently nodemon
 
+                npm i cors @types/cors
+
+                npm i mysql2
+
         4. Initiate Typescript Configuration
 
                 npx tsc --init
