@@ -4,16 +4,26 @@ import util from 'util';
 
 const query: any = util.promisify(db.query).bind(db)
 
-export const GetAllPassangers = async(req: Request, res: Response) => {
+export const GetPassangers = async(req: Request, res: Response) => {
     try {
-        const findAllPassangers = await query('SELECT * FROM passangers');
-
-        await query('...')
+        const {PassangerName, Survived, Sex, Pclass} = req.query
         
-        res.status(200).send({
+        let findPassangers
+    
+        if(PassangerName){
+            findPassangers = await query(`SELECT * FROM passangers WHERE Name LIKE "%${PassangerName}%"`)
+        }else if(Survived && Sex){
+            findPassangers = await query(`SELECT * FROM passangers WHERE Survived=${Survived} AND Sex="${Sex}"`)
+        }else if(Survived && Pclass){
+            findPassangers = await query(`SELECT * FROM passangers WHERE Survived=${Survived} AND Pclass = ${Pclass}`)
+        }else{
+            findPassangers = await query('SELECT * FROM passangers');
+        }
+
+        return res.status(200).send({
             error: false, 
             message: 'Get All Passangers Success!', 
-            data: findAllPassangers
+            data: findPassangers
         })
     } catch (error) {
         console.log(error)

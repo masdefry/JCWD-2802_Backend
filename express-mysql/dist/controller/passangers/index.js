@@ -12,22 +12,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetAllPassangers = void 0;
+exports.GetPassangers = void 0;
 const connection_1 = __importDefault(require("../../connection"));
 const util_1 = __importDefault(require("util"));
 const query = util_1.default.promisify(connection_1.default.query).bind(connection_1.default);
-const GetAllPassangers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const GetPassangers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const findAllPassangers = yield query('SELECT * FROM passangers');
-        yield query('...');
-        res.status(200).send({
+        const { PassangerName, Survived, Sex, Pclass } = req.query;
+        let findPassangers;
+        if (PassangerName) {
+            findPassangers = yield query(`SELECT * FROM passangers WHERE Name LIKE "%${PassangerName}%"`);
+        }
+        else if (Survived && Sex) {
+            findPassangers = yield query(`SELECT * FROM passangers WHERE Survived=${Survived} AND Sex="${Sex}"`);
+        }
+        else if (Survived && Pclass) {
+            findPassangers = yield query(`SELECT * FROM passangers WHERE Survived=${Survived} AND Pclass = ${Pclass}`);
+        }
+        else {
+            findPassangers = yield query('SELECT * FROM passangers');
+        }
+        return res.status(200).send({
             error: false,
             message: 'Get All Passangers Success!',
-            data: findAllPassangers
+            data: findPassangers
         });
     }
     catch (error) {
         console.log(error);
     }
 });
-exports.GetAllPassangers = GetAllPassangers;
+exports.GetPassangers = GetPassangers;

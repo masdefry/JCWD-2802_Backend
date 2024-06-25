@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { GetAllPassangers } from "../controller/passangers";
+import { GetPassangers } from "../controller/passangers";
 
 const router = Router()
 
-router.get('/', GetAllPassangers)
+router.get('/', GetPassangers)
 
 export default router;
