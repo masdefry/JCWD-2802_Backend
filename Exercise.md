@@ -32,3 +32,30 @@ ALTER TABLE Students RENAME COLUMN alternative_phone_number TO description;
 
 ALTER TABLE Students DROP COLUMN gender;
 
+>>> SLIDE-02
+
+USE purwadhika_branch;
+
+CREATE TABLE branches(
+id integer not null primary key auto_increment,
+branch_name varchar(50) not null, 
+pic varchar(15) not null, 
+address varchar(255) not null, 
+city varchar(50) not null, 
+province varchar(50) not null
+);
+
+SHOW TABLES;
+DESCRIBE branches;
+
+INSERT INTO branches(branch_name, pic, address, city, province) VALUES (
+("BSD", "Angel", "GOP", "BSD", "Tangerang"),
+("JKT", "Budi", "MSIG Tower", "Jakarta Selatan", "Jakarta")
+);
+
+INSERT INTO branches(branch_name, pic, address, city, province) VALUES ("BSD", "Angel", "GOP", "BSD", "Tangerang");
+SELECT * FROM branches;
+
+UPDATE branches SET pic = "Dono" WHERE id=1;
+
+INSERT INTO branches(branch_name, pic, address, city, province) VALUES ("BLI", "Tono", "Gianyar", "Gianyar", "Bali");
