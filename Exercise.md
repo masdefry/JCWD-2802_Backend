@@ -59,3 +59,51 @@ SELECT * FROM branches;
 UPDATE branches SET pic = "Dono" WHERE id=1;
 
 INSERT INTO branches(branch_name, pic, address, city, province) VALUES ("BLI", "Tono", "Gianyar", "Gianyar", "Bali");
+
+>>> SLIDE-03
+USE sakila;
+
+SELECT first_name, last_name FROM actor;
+
+SELECT actor_id, first_name, last_name FROM actor WHERE first_name = "Joe";
+
+SELECT district, address, city_id FROM address WHERE district IN ("California", "Alberta", "Mekka");
+
+SELECT COUNT(*) as last_name_wood FROM actor WHERE last_name = "Wood";
+
+SELECT customer_id, SUM(amount) as total_amount FROM payment GROUP BY customer_id HAVING total_amount > 20;
+
+>>> SLIDE-04
+
+INSERT INTO actor(first_name, last_name) VALUES("JHONNY", "DAVIS");
+SELECT * FROM actor WHERE first_name = "JHONNY";
+DESCRIBE actor;
+
+INSERT INTO actor(first_name, last_name) 
+VALUES
+("ADAM", "DAVIS"), 
+("JEREMY", "DAVIS"), 
+("CRAIG", "DAVIS"), 
+("STEVE", "DAVIS");
+
+SELECT COUNT(*) FROM actor WHERE last_name = "DAVIS";
+
+DELETE FROM film_actor WHERE actor_id = 4;
+DELETE FROM actor WHERE first_name = "JENNIFER" AND last_name = "DAVIS";
+
+UPDATE actor SET first_name = "GEORGE" WHERE last_name = "DAVIS";
+
+SELECT fa.actor_id, a.first_name, a.last_name, COUNT(fa.film_id) as total_film FROM film_actor fa 
+JOIN actor a ON a.actor_id = fa.actor_id
+GROUP BY actor_id ORDER BY total_film DESC LIMIT 10;
+
+SELECT title, description, length, rating FROM film 
+WHERE special_features LIKE "%DELETED SCENE%" AND special_features LIKE "%BEHIND THE SCENE%"
+ORDER BY length DESC;
+
+SELECT c.country, count(cust.customer_id) as inactive_customer FROM customer cust
+JOIN address a ON cust.address_id = a.address_id
+JOIN city cit ON a.city_id = cit.city_id
+JOIN country c ON cit.country_id = c.country_id
+WHERE cust.active = 0
+GROUP BY c.country ORDER BY inactive_customer DESC;
