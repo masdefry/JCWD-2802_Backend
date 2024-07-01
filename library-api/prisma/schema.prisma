@@ -40,6 +40,8 @@ model LibraryBranch {
 
   library_branches_books LibraryBranchBook[]
 
+  staffs Staff[]
+
   @@map("library_branches")
 }
 
@@ -66,7 +68,9 @@ model Staff {
   email       String
   password    String
   phoneNumber String    @db.VarChar(15)
-  position    String    @db.VarChar(15)
+  position    Position
+  libraryBranchId Int 
+  library_branches LibraryBranch @relation(fields: [libraryBranchId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
@@ -76,6 +80,10 @@ model Staff {
   staff_schedules StaffSchedule[]
 
   @@map("staffs")
+}
+enum Position{
+  HEAD_OFFICE
+  HELPER
 }
 
 model Transaction {
@@ -116,8 +124,8 @@ model TransactionDetail {
 
 model StaffSchedule {
   id        Int       @id @default(autoincrement())
-  clockIn   DateTime
-  clockOut  DateTime
+  clockIn   DateTime @db.Time()
+  clockOut  DateTime @db.Time()
   staffUid  String
   staffs    Staff     @relation(fields: [staffUid], references: [uid])
   createdAt DateTime  @default(now())
@@ -132,7 +140,7 @@ model LibraryBranchBook {
   books            Book          @relation(fields: [bookId], references: [id])
   libraryBranchId  Int
   library_branches LibraryBranch @relation(fields: [libraryBranchId], references: [id])
-
+  
   @@id([bookId, libraryBranchId])
   @@map("library_branches_books")
 }
