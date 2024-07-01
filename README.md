@@ -107,3 +107,17 @@ Hello, Student(s) JCWD-2802!
         5. Formatting `schema.prisma`
 
                 npx prisma format or prisma format
+
+        6. Setup Seeders
+
+                - Create `seed.js` on `prisma` Folders
+
+                - Add this code on `package.json`:
+                
+                        "prisma": {
+                                "seed": "node prisma/seed.js"
+                        }
+
+                - After That, You Can Execute this Command:
+
+                        npx prisma db seed
