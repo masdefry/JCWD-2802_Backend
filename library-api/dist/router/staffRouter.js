@@ -6,4 +6,5 @@ const staff_1 = require("../controller/staff");
 router.post('/auth', staff_1.auth);
 router.post('/register-member', staff_1.createMember);
 router.post('/register-book', staff_1.createBook);
+router.post('/transaction', staff_1.createTransaction);
 exports.default = router;

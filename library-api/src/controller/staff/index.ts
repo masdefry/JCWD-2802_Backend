@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { prisma } from '../../connection';
-import { isAfter, isBefore, lightFormat } from 'date-fns';
+import { isAfter, isBefore, lightFormat, addDays } from 'date-fns';
 
 export const auth = async(req: Request, res: Response, next: NextFunction) => {
     try {
@@ -85,6 +85,37 @@ export const createBook = async(req: Request, res: Response, next: NextFunction)
         res.status(201).send({
             error: false, 
             message: 'Create Book Success!', 
+            data: {}
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const createTransaction = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const{memberUid, staffUid, books} = req.body
+        
+        const createdTransaction = await prisma.transaction.create({
+            data: {
+                borrowingDate: new Date(), 
+                returnDate: addDays(new Date(), 5), 
+                totalPrice: 0, 
+                memberUid, 
+                staffUid
+            }
+        })
+        
+        books.forEach(item => {
+            item.transactionId = createdTransaction.id
+        })
+        await prisma.transactionDetail.createMany({
+            data: books 
+        })
+
+        res.status(201).send({
+            error: false, 
+            message: 'Create Transaction Success!', 
             data: {}
         })
     } catch (error) {

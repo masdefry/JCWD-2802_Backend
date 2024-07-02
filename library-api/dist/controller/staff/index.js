@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createBook = exports.createMember = exports.auth = void 0;
+exports.createTransaction = exports.createBook = exports.createMember = exports.auth = void 0;
 const connection_1 = require("../../connection");
 const date_fns_1 = require("date-fns");
 const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -94,3 +94,32 @@ const createBook = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.createBook = createBook;
+const createTransaction = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { memberUid, staffUid, books } = req.body;
+        const createdTransaction = yield connection_1.prisma.transaction.create({
+            data: {
+                borrowingDate: new Date(),
+                returnDate: (0, date_fns_1.addDays)(new Date(), 5),
+                totalPrice: 0,
+                memberUid,
+                staffUid
+            }
+        });
+        books.forEach(item => {
+            item.transactionId = createdTransaction.id;
+        });
+        yield connection_1.prisma.transactionDetail.createMany({
+            data: books
+        });
+        res.status(201).send({
+            error: false,
+            message: 'Create Transaction Success!',
+            data: {}
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.createTransaction = createTransaction;
