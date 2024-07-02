@@ -22,46 +22,56 @@ const staffs = [
             name: "M. Defryan",
             email: "defryan@gmail.com",
             password: "abc12345", 
-            phoneNumber: "0813121212121",
-            position: "HELPER"
+            phoneNumber: "081335719893",
+            position: "HEAD_OFFICE"
         },
         {
             name: "Desmond",
             email: "desmond@gmail.com",
             password: "abc12345", 
-            phoneNumber: "0813121212121",
-            position: "HEAD_OFFICE"
+            phoneNumber: "081220223011",
+            position: "HELPER"
         }
     ],
     [
         {
-            name: "M. Defryan",
-            email: "defryan@gmail.com",
+            name: "Aboy",
+            email: "aboy@gmail.com",
             password: "abc12345", 
-            phoneNumber: "0813121212121",
-            position: "HELPER"
+            phoneNumber: "087822114019",
+            position: "HEAD_OFFICE"
         },
         {
             name: "Desmond",
             email: "desmond@gmail.com",
             password: "abc12345", 
-            phoneNumber: "0813121212121",
-            position: "HEAD_OFFICE"
+            phoneNumber: "085213162000",
+            position: "HELPER"
         }
     ]
 ]
 
 const staffSchedules = [
-    {
-        clockIn: new Date("2024-07-01 09:00:00"),
-        clockOut: new Date("2024-07-01 15:00:00"), 
-        staffUid: "cly2opuzm0001cyn6qurn9789"
-    },
-    {
-        clockIn: new Date("2024-07-01 15:00:00"),
-        clockOut: new Date("2024-07-01 21:00:00"), 
-        staffUid: "cly2opv060003cyn6a43d4exj"
-    }
+    [
+        {
+            clockIn: new Date("2024-07-01 09:00:00"),
+            clockOut: new Date("2024-07-01 15:00:00"),
+        },
+        {
+            clockIn: new Date("2024-07-01 15:00:00"),
+            clockOut: new Date("2024-07-01 21:00:00"), 
+        }
+    ],
+    [
+        {
+            clockIn: new Date("2024-07-01 09:00:00"),
+            clockOut: new Date("2024-07-01 15:00:00"),
+        },
+        {
+            clockIn: new Date("2024-07-01 15:00:00"),
+            clockOut: new Date("2024-07-01 21:00:00"), 
+        }
+    ]
 ]
 
 async function main(){
@@ -89,9 +99,16 @@ async function main(){
             data: item
         })
 
-        staffs[index].forEach(async(item) => {
-            await prisma.staff.create({
+        staffs[index].forEach(async(item, idx) => {
+            const res = await prisma.staff.create({
                 data: {...item, libraryBranchId: result.id}
+            })
+
+            await prisma.staffSchedule.create({
+                data: {
+                    ...staffSchedules[index][idx],
+                    staffUid: res.uid
+                }
             })
         })
     })
