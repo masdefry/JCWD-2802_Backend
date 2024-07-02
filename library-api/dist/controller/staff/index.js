@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTransaction = exports.createBook = exports.createMember = exports.auth = void 0;
+exports.returnTransaction = exports.createTransaction = exports.createBook = exports.createMember = exports.auth = void 0;
 const connection_1 = require("../../connection");
 const date_fns_1 = require("date-fns");
 const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -97,6 +97,8 @@ exports.createBook = createBook;
 const createTransaction = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { memberUid, staffUid, books } = req.body;
+        if (books.length > 3)
+            throw { message: 'Book Qty is Over Limit!', status: 400 };
         const createdTransaction = yield connection_1.prisma.transaction.create({
             data: {
                 borrowingDate: new Date(),
@@ -123,3 +125,43 @@ const createTransaction = (req, res, next) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.createTransaction = createTransaction;
+const returnTransaction = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { idTransaction } = req.params;
+        const findTransaction = yield connection_1.prisma.transaction.findFirst({
+            where: {
+                id: parseInt(idTransaction)
+            }
+        });
+        if (!findTransaction)
+            throw { message: 'Transaction Not Found!', status: 404 };
+        if (findTransaction.fine !== null)
+            throw { message: 'Transaction Has Been Completed!', status: 400 };
+        const returnDate = new Date((0, date_fns_1.lightFormat)(findTransaction === null || findTransaction === void 0 ? void 0 : findTransaction.returnDate, 'yyyy-MM-dd HH:mm:ss'));
+        const now = new Date((0, date_fns_1.lightFormat)(new Date(), 'yyyy-MM-dd HH:mm:ss'));
+        const difference = Math.floor((0, date_fns_1.differenceInHours)(now, returnDate) / 24);
+        let fine = 0;
+        if (difference > 0) {
+            fine = difference * 5000;
+        }
+        yield connection_1.prisma.transaction.update({
+            where: {
+                id: parseInt(idTransaction)
+            },
+            data: {
+                fine
+            }
+        });
+        res.status(201).send({
+            error: false,
+            message: 'Transaction Complete!',
+            data: {
+                fine
+            }
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.returnTransaction = returnTransaction;

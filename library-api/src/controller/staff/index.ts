@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { prisma } from '../../connection';
-import { isAfter, isBefore, lightFormat, addDays } from 'date-fns';
+import { isAfter, isBefore, lightFormat, addDays, differenceInHours } from 'date-fns';
 
 export const auth = async(req: Request, res: Response, next: NextFunction) => {
     try {
@@ -96,6 +96,8 @@ export const createTransaction = async(req: Request, res: Response, next: NextFu
     try {
         const{memberUid, staffUid, books} = req.body
         
+        if(books.length > 3) throw { message: 'Book Qty is Over Limit!', status: 400 }
+
         const createdTransaction = await prisma.transaction.create({
             data: {
                 borrowingDate: new Date(), 
@@ -117,6 +119,47 @@ export const createTransaction = async(req: Request, res: Response, next: NextFu
             error: false, 
             message: 'Create Transaction Success!', 
             data: {}
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const returnTransaction = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const {idTransaction} = req.params
+        
+        const findTransaction = await prisma.transaction.findFirst({
+            where: {
+                id: parseInt(idTransaction)
+            }
+        })
+
+        if(!findTransaction) throw { message: 'Transaction Not Found!', status: 404 }
+        if(findTransaction.fine !== null) throw { message: 'Transaction Has Been Completed!', status: 400 }
+        const returnDate = new Date(lightFormat(findTransaction?.returnDate, 'yyyy-MM-dd HH:mm:ss'))
+        const now = new Date(lightFormat(new Date(), 'yyyy-MM-dd HH:mm:ss'))
+        const difference = Math.floor(differenceInHours(now, returnDate)/24)
+        let fine = 0
+        if(difference > 0){
+            fine = difference * 5000
+        }
+
+        await prisma.transaction.update({
+            where: {
+                id: parseInt(idTransaction)
+            }, 
+            data: {
+                fine
+            }
+        })
+
+        res.status(201).send({
+            error: false, 
+            message: 'Transaction Complete!', 
+            data: {
+                fine
+            }
         })
     } catch (error) {
         next(error)

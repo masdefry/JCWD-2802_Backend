@@ -7,4 +7,5 @@ router.post('/auth', staff_1.auth);
 router.post('/register-member', staff_1.createMember);
 router.post('/register-book', staff_1.createBook);
 router.post('/transaction', staff_1.createTransaction);
+router.patch('/return-transaction/:idTransaction', staff_1.returnTransaction);
 exports.default = router;
