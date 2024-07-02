@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createMember = exports.auth = void 0;
+exports.createBook = exports.createMember = exports.auth = void 0;
 const connection_1 = require("../../connection");
 const date_fns_1 = require("date-fns");
 const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -64,3 +64,33 @@ const createMember = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.createMember = createMember;
+const createBook = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { title, author, publishYear, genre, isbn, branch_id } = req.body;
+        const createdBook = yield connection_1.prisma.book.create({
+            data: {
+                title,
+                author,
+                publishYear: new Date(publishYear),
+                genre,
+                isbn
+            }
+        });
+        const distributedBooks = [];
+        branch_id.forEach((item) => {
+            distributedBooks.push({ bookId: createdBook.id, libraryBranchId: item });
+        });
+        yield connection_1.prisma.libraryBranchBook.createMany({
+            data: distributedBooks
+        });
+        res.status(201).send({
+            error: false,
+            message: 'Create Book Success!',
+            data: {}
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.createBook = createBook;

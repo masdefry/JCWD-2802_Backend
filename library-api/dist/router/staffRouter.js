@@ -5,4 +5,5 @@ const router = (0, express_1.Router)();
 const staff_1 = require("../controller/staff");
 router.post('/auth', staff_1.auth);
 router.post('/register-member', staff_1.createMember);
+router.post('/register-book', staff_1.createBook);
 exports.default = router;

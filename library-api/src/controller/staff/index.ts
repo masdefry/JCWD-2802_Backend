@@ -57,3 +57,37 @@ export const createMember = async(req: Request, res: Response, next: NextFunctio
         next(error)
     }
 }
+
+export const createBook = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const {title, author, publishYear, genre, isbn, branch_id}= req.body
+
+        const createdBook = await prisma.book.create({
+            data: {
+                title, 
+                author, 
+                publishYear: new Date(publishYear), 
+                genre, 
+                isbn
+            }
+        })
+        
+
+        const distributedBooks: any = []
+        branch_id.forEach((item: any) => {
+            distributedBooks.push({bookId: createdBook.id, libraryBranchId: item})
+        })
+        
+        await prisma.libraryBranchBook.createMany({
+            data: distributedBooks
+        })
+
+        res.status(201).send({
+            error: false, 
+            message: 'Create Book Success!', 
+            data: {}
+        })
+    } catch (error) {
+        next(error)
+    }
+}
