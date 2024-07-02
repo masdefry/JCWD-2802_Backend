@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.auth = void 0;
+exports.createMember = exports.auth = void 0;
 const connection_1 = require("../../connection");
 const date_fns_1 = require("date-fns");
-const auth = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
         const findStaff = yield connection_1.prisma.staff.findFirst({
@@ -25,7 +25,6 @@ const auth = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 ]
             }
         });
-        console.log(findStaff);
         if (findStaff === null)
             throw { message: 'Login Failed! Username & Password Doesnt Match!', status: 401 };
         const { clockIn, clockOut } = yield connection_1.prisma.staffSchedule.findFirst({
@@ -44,11 +43,24 @@ const auth = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
-        res.status(error.status).send({
-            error: true,
-            message: error.message,
-            data: {}
-        });
+        next(error);
     }
 });
 exports.auth = auth;
+const createMember = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { username, address, phoneNumber, birthDate } = req.body;
+        yield connection_1.prisma.member.create({
+            data: { username, address, phoneNumber, birthDate: new Date(birthDate) }
+        });
+        res.status(201).send({
+            error: false,
+            message: 'Create Member Success!',
+            data: {}
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.createMember = createMember;

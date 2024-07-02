@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { prisma } from '../../connection';
 import { isAfter, isBefore, lightFormat } from 'date-fns';
 
-export const auth = async(req: Request, res: Response) => {
+export const auth = async(req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body 
         
@@ -16,7 +16,7 @@ export const auth = async(req: Request, res: Response) => {
                 ]
             }
         })
-        console.log(findStaff)
+       
         if(findStaff === null) throw { message: 'Login Failed! Username & Password Doesnt Match!', status: 401 }
 
         const {clockIn, clockOut}: any = await prisma.staffSchedule.findFirst({
@@ -36,10 +36,24 @@ export const auth = async(req: Request, res: Response) => {
             data: {}
         })
     } catch (error: any) {
-        res.status(error.status).send({
-            error: true, 
-            message: error.message, 
+        next(error)
+    }
+}
+
+export const createMember = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const {username, address, phoneNumber, birthDate} = req.body 
+        
+        await prisma.member.create({
+            data: {username, address, phoneNumber, birthDate: new Date(birthDate)}
+        })
+
+        res.status(201).send({
+            error: false, 
+            message: 'Create Member Success!', 
             data: {}
         })
+    } catch (error: any) {
+        next(error)
     }
 }

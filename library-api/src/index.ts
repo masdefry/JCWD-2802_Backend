@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import router from './router';
 
@@ -15,6 +15,15 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.use(router);
+
+// Centralized Error
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+    res.status(error.status || 500).send({
+        error: true, 
+        message: error.message || 'Something Went Wrong!', 
+        data: {}
+    })
+})
 
 app.listen(port, () => {
     console.log(`[SERVER] Server Running on Port ${port}`)

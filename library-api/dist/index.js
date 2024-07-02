@@ -16,6 +16,14 @@ app.get('/', (req, res) => {
     res.send('<h1>Welcome to Tracker Expenses API</h1>');
 });
 app.use(router_1.default);
+// Centralized Error
+app.use((error, req, res, next) => {
+    res.status(error.status || 500).send({
+        error: true,
+        message: error.message || 'Something Went Wrong!',
+        data: {}
+    });
+});
 app.listen(port, () => {
     console.log(`[SERVER] Server Running on Port ${port}`);
 });
