@@ -20,8 +20,6 @@ Hello, Student(s) JCWD-2802!
 
 
 
-
-
 + How to Setup Express Typescript?
 
         1. Create New Directory for Express Typescript Projects
@@ -35,6 +33,8 @@ Hello, Student(s) JCWD-2802!
                 npm i express cors @types/express @types/cors @types/node
 
                 npm i -D typescript concurrently nodemon
+
+                npm i jsonwebtoken @types/jsonwebtoken
 
         4. Initiate Typescript Configuration
 
@@ -121,3 +121,11 @@ Hello, Student(s) JCWD-2802!
                 - After That, You Can Execute this Command:
 
                         npx prisma db seed
+
++ Authentication Types
+                
+                - Basic Auth
+
+                - Bearer Auth
+
+                - Oauth
