@@ -10,8 +10,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authenticate = void 0;
+const connection_1 = require("../../connection");
 const authenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { email, password } = req.body;
+        const findUser = yield connection_1.prisma.users.findFirst({
+            where: {
+                AND: [
+                    {
+                        email, password
+                    }
+                ]
+            }
+        });
+        if (findUser === null)
+            throw { message: 'Authentication Failed! Email & Password Doesnt Match!', status: 401 };
+        res.status(200).send({
+            error: false,
+            message: 'Authentication Success!',
+            data: {}
+        });
     }
     catch (error) {
         next(error);
