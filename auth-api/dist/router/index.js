@@ -6,5 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const router = (0, express_1.Router)();
 const authRouter_1 = __importDefault(require("./authRouter"));
+const userRouter_1 = __importDefault(require("./userRouter"));
 router.use('/auth', authRouter_1.default);
+router.use('/user', userRouter_1.default);
 exports.default = router;

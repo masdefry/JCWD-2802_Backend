@@ -9,37 +9,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticate = void 0;
+exports.findUserProfile = void 0;
 const connection_1 = require("../../connection");
-const jwt_1 = require("../../helper/jwt");
-const authenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const findUserProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email, password } = req.body;
+        const { userId, role } = req.body;
         const findUser = yield connection_1.prisma.users.findFirst({
             where: {
-                AND: [
-                    {
-                        email, password
-                    }
-                ]
+                id: userId
+            },
+            select: {
+                username: true, email: true, role: true
             }
-        });
-        if (findUser === null)
-            throw { message: 'Authentication Failed! Email & Password Doesnt Match!', status: 401 };
-        const token = (0, jwt_1.createToken)({
-            userId: findUser.id,
-            role: findUser.role
         });
         res.status(200).send({
-            error: false,
-            message: 'Authentication Success!',
-            data: {
-                token
-            }
+            error: true,
+            message: 'Get Profile Success!',
+            data: findUser
         });
     }
     catch (error) {
         next(error);
     }
 });
-exports.authenticate = authenticate;
+exports.findUserProfile = findUserProfile;
