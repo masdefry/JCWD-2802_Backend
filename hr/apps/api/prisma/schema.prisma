@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Sample {
+  id        Int      @id @default(autoincrement())
+  name      String
+  code      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("samples")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  firstName String     @db.VarChar(25)
+  lastName  String     @db.VarChar(25)
+  email     String     @db.VarChar(50)
+  password  String     @db.VarChar(15)
+  role      Role
+
+  shiftId     Int
+  shift       Shift     @relation(fields: [shiftId], references: [id])
+
+  attendances Attendance[]
+
+  positionId  Int
+  position    Position  @relation(fields: [positionId], references: [id])
+
+  leavesRequested Leave[] @relation("LeavesRequested")
+  leavesApproved  Leave[] @relation("LeavesApproved")
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  deletedAt  DateTime?
+
+  @@map("users")
+}
+
+enum Role {
+  HR
+  STAFF
+}
+
+model Shift {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(15)
+  startTime DateTime @db.Time()
+  endTime   DateTime @db.Time()
+
+  users     User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("shifts")
+}
+
+model Attendance {
+  id        Int      @id @default(autoincrement())
+  date      DateTime @db.Date
+  clockIn   DateTime @db.Time()
+  clockOut  DateTime @db.Time()
+  deduction Int
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("attendances")
+}
+
+model Position {
+  id        Int      @id @default(autoincrement())
+  name      String
+  salary    Int
+
+  users     User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("positions")
+}
+
+model Leave {
+  id             Int            @id @default(autoincrement())
+  startDate      DateTime       @db.Date
+  endDate        DateTime       @db.Date
+  approvalStatus ApprovalStatus
+
+  userIdRequest  String
+  userRequest    User           @relation("LeavesRequested", fields: [userIdRequest], references: [id])
+
+  userIdApproval String
+  userApproval   User           @relation("LeavesApproved", fields: [userIdApproval], references: [id])
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  deletedAt      DateTime?
+
+  @@map("leaves")
+}
+
+enum ApprovalStatus {
+  WAITING
+  ACCEPT
+  REJECT
+}
