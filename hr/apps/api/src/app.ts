@@ -1,68 +1,30 @@
-import express, {
-  json,
-  urlencoded,
-  Express,
-  Request,
-  Response,
-  NextFunction,
-  Router,
-} from 'express';
+import express, { Express, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
-import { PORT } from './config';
-import { SampleRouter } from './routers/sample.router';
+import router from './router';
 
-export default class App {
-  private app: Express;
+const app: Express = express();
+app.use(express.json()) // [WAJIB!] Initialize Body Parser: Supaya Dapat Mengambil Request Data dari Body
+app.use(cors())
 
-  constructor() {
-    this.app = express();
-    this.configure();
-    this.routes();
-    this.handleError();
-  }
+const port: number = 5000;
 
-  private configure(): void {
-    this.app.use(cors());
-    this.app.use(json());
-    this.app.use(urlencoded({ extended: true }));
-  }
+app.get('/', (req: Request, res: Response) => {
+    // Req: Digunakan Untuk Mengambil Resource dari Client
+    // Res: Digunakan Untuk Mengirim Response Menuju Client
+    res.send('<h1>Welcome to Auth API</h1>')
+})
 
-  private handleError(): void {
-    // not found
-    this.app.use((req: Request, res: Response, next: NextFunction) => {
-      if (req.path.includes('/api/')) {
-        res.status(404).send('Not found !');
-      } else {
-        next();
-      }
-    });
+app.use(router);
 
-    // error
-    this.app.use(
-      (err: Error, req: Request, res: Response, next: NextFunction) => {
-        if (req.path.includes('/api/')) {
-          console.error('Error : ', err.stack);
-          res.status(500).send('Error !');
-        } else {
-          next();
-        }
-      },
-    );
-  }
+// Centralized Error
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+    res.status(error.status || 500).send({
+        error: true, 
+        message: error.message || 'Something Went Wrong!', 
+        data: {}
+    })
+})
 
-  private routes(): void {
-    const sampleRouter = new SampleRouter();
-
-    this.app.get('/api', (req: Request, res: Response) => {
-      res.send(`Hello, Purwadhika Student API!`);
-    });
-
-    this.app.use('/api/samples', sampleRouter.getRouter());
-  }
-
-  public start(): void {
-    this.app.listen(PORT, () => {
-      console.log(`  ➜  [API] Local:   http://localhost:${PORT}/`);
-    });
-  }
-}
+app.listen(port, () => {
+    console.log(`[SERVER] Server Running on Port ${port}`)
+})

@@ -1,39 +1,33 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = PrismaClient()
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient()
 
 const shifts = [
     {
-        id: 1, 
         name: 'Morning',
-        startTime: '0000-00-00 09:00:00',
-        endTime: '0000-00-00 18:00:00'
+        startTime: new Date('2024-07-04 09:00:00'),
+        endTime: new Date('2024-07-04 18:00:00')
     },
     {
-        id: 2, 
         name: 'Night',
-        startTime: '0000-00-00 13:00:00',
-        endTime: '0000-00-00 21:00:00'
+        startTime: new Date('2024-07-04 13:00:00'),
+        endTime: new Date('2024-07-04 21:00:00')
     }
 ]
 
 const positions = [
     {
-        id: 1, 
         name: 'HR', 
         salary: 10000000
     },
     {
-        id: 2, 
         name: 'MANAGER', 
         salary: 250000000
     },
     {
-        id: 3, 
         name: 'PRODUCT_MANAGER', 
         salary: 17500000
     },
     {
-        id: 4, 
         name: 'PROGRAMMER', 
         salary: 15000000
     }
@@ -60,21 +54,21 @@ const users = [
     },
 ]
 
-function main(){
+async function main(){
     shifts.forEach(async(item) => {
-        await prisma.shifts.create({
+        await prisma.shift.create({
             data: item
         })
     })
 
     positions.forEach(async(item) => {
-        await prisma.positions.create({
+        await prisma.position.create({
             data: item
         })
     })
 
     users.forEach(async(item) => {
-        await prisma.users.create({
+        await prisma.user.create({
             data: item
         })
     })
