@@ -1,6 +1,12 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient()
 
+const bcrypt = require('bcrypt');
+const hashPassword = async(password) => {
+    const saltRounds = 10;
+    return await bcrypt.hash(password, saltRounds)
+}
+
 const shifts = [
     {
         name: 'Morning',
@@ -40,8 +46,8 @@ const users = [
         email: 'immanuel@gmail.com',
         password: 'abc12345',
         role: 'HR',
-        shiftId: 1, 
-        positionId: 1
+        shiftId: 15, 
+        positionId: 31
     },
     {
         firstName: 'Sangalabror',
@@ -49,27 +55,30 @@ const users = [
         email: 'aboy@gmail.com',
         password: 'abc12345',
         role: 'HR',
-        shiftId: 2, 
-        positionId: 1
+        shiftId: 16, 
+        positionId: 31
     },
 ]
 
 async function main(){
-    shifts.forEach(async(item) => {
-        await prisma.shift.create({
-            data: item
-        })
-    })
+    // shifts.forEach(async(item) => {
+    //     await prisma.shift.create({
+    //         data: item
+    //     })
+    // })
 
-    positions.forEach(async(item) => {
-        await prisma.position.create({
-            data: item
-        })
-    })
+    // positions.forEach(async(item) => {
+    //     await prisma.position.create({
+    //         data: item
+    //     })
+    // })
 
     users.forEach(async(item) => {
         await prisma.user.create({
-            data: item
+            data: {
+                ...item, 
+                password: await hashPassword(item.password)
+            }
         })
     })
 }
@@ -79,3 +88,7 @@ main().catch((error) => {
 }).finally(async() => {
     await prisma.$disconnect()
 })
+
+
+
+// npx prisma db push --force-reset && npx prisma db push && npx prisma db seed
