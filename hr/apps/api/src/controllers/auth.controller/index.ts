@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import {prisma} from '../../connection';
-import { comparePassword } from '@/helper/hashPassword';
+import { comparePassword, hashPassword } from '@/helper/hashPassword';
 import { createToken } from '@/helper/createToken';
 
 export const auth = async(req: Request, res: Response, next: NextFunction) => {
@@ -31,6 +31,50 @@ export const auth = async(req: Request, res: Response, next: NextFunction) => {
                 email: findUser.email,
                 role: findUser.role
             }
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const registerStaff = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const {firstName, lastName, email, password, role, position, shift} = req.body
+
+        const findUser = await prisma.user.findFirst({
+            where: {
+                email
+            }
+        })
+
+        if(findUser) throw { message: 'Email Already Register', status: 400 }
+
+        const findPosition = await prisma.position.findFirst({
+            where: {
+                id: parseInt(position)
+            }
+        })
+
+        if((role === 'HR' && findPosition?.name !== 'HR') 
+            || 
+        (role === 'STAFF' && findPosition?.name === 'HR')) throw { message: 'Invalid Position', status: 400 }
+        
+        await prisma.user.create({
+            data: {
+                firstName, 
+                lastName, 
+                email, 
+                password: await hashPassword(password), 
+                role, 
+                positionId: parseInt(position), 
+                shiftId: parseInt(shift)
+            }
+        })
+
+        res.status(201).send({
+            error: false, 
+            message: 'Create Staff Success',
+            data: {}
         })
     } catch (error) {
         next(error)

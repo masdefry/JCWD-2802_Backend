@@ -15,11 +15,6 @@ export default function AuthPage(){
                 {
                     username, 
                     password
-                },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
                 }
             )
         },
@@ -33,7 +28,7 @@ export default function AuthPage(){
     })
 
     return(
-        <main className='flex justify-center'>
+        <main className='flex justify-center py-3'>
             <section id='form-login'>
                 <h1 className='font-bold text-2xl'>
                     Sign in
