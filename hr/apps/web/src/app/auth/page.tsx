@@ -28,8 +28,8 @@ export default function AuthPage(){
     })
 
     return(
-        <main className='flex justify-center py-3'>
-            <section id='form-login'>
+        <main className='flex justify-center px-10'>
+            <section id='form-login' className='py-10'>
                 <h1 className='font-bold text-2xl'>
                     Sign in
                 </h1>

@@ -40,7 +40,7 @@ export const auth = async(req: Request, res: Response, next: NextFunction) => {
 export const registerStaff = async(req: Request, res: Response, next: NextFunction) => {
     try {
         const {firstName, lastName, email, password, role, position, shift} = req.body
-
+     
         const findUser = await prisma.user.findFirst({
             where: {
                 email

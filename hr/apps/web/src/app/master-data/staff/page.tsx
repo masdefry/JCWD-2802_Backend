@@ -3,42 +3,19 @@ import {Formik, Form, ErrorMessage, Field} from 'formik';
 import { GoPerson, GoPersonFill } from 'react-icons/go';
 import { MdOutlineAlternateEmail } from 'react-icons/md';
 import { CiLock } from 'react-icons/ci';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import axios from 'axios';
-import { registerStaffSchema } from '@/features/registerStaffSchema';
+import { registerStaffSchema } from '@/features/master-data/staff/schemas/registerStaffSchema';
+
+import {useGetShiftsAndPositions} from '@/features/master-data/staff/hooks/useGetShiftsAndPositions'
+import {usePostStaff} from '@/features/master-data/staff/hooks/usePostStaff'
 
 export default function MasterDataStaffPage(){
 
-    // Paralel
-    const { data: dataShifts, isError: isErrorShifts } = useQuery({
-        queryKey: ['get-shifts'],
-        queryFn: async() => {
-            const res = await axios.get('http://localhost:8000/shifts')
-            return res.data.data
-        }
-    })
+    const { dataShifts, 
+        isErrorShifts,
+        dataPositions, 
+        isErrorPositions } = useGetShiftsAndPositions()
 
-    const { data: dataPositions, isError: isErrorPositions } = useQuery({
-        queryKey: ['get-positions'],
-        queryFn: async() => {
-            const res = await axios.get('http://localhost:8000/positions')
-            return res.data.data
-        }
-    })
-
-    const { mutate: mutationCreateStaff } = useMutation({
-        mutationFn: async({firstName, lastName, email, password, role, position, shift}) => {
-            await axios.post('http://localhost:8000/auth/register-staff', {
-                firstName, 
-                lastName, 
-                email, 
-                password, 
-                role, 
-                position, 
-                shift
-            })
-        }
-    })
+    const { mutationCreateStaff } = usePostStaff()
 
     return(
         <main className='flex justify-center px-10'>
