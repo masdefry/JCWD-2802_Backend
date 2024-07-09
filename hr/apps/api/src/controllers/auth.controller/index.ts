@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import {prisma} from '../../connection';
 import { comparePassword, hashPassword } from '@/helper/hashPassword';
 import { createToken } from '@/helper/createToken';
+import { find } from '@reduxjs/toolkit/dist/utils';
 
 export const auth = async(req: Request, res: Response, next: NextFunction) => {
     try {
@@ -12,9 +13,13 @@ export const auth = async(req: Request, res: Response, next: NextFunction) => {
                 AND: [
                     {email: username}
                 ]
+            }, 
+            include: {
+                shift: true, 
+                position: true
             }
         })
-
+        console.log(findUser)
         if(findUser === null) throw { message: 'Username & Password Doesnt Match', status: 401 }
         
         const isPasswordMatch = await comparePassword(password, findUser.password)
@@ -28,8 +33,15 @@ export const auth = async(req: Request, res: Response, next: NextFunction) => {
             message: 'Authentication Success!', 
             data: {
                 token, 
+                firstName: findUser.firstName, 
+                lastName: findUser.lastName,
                 email: findUser.email,
-                role: findUser.role
+                role: findUser.role, 
+                shift: {
+                    startTime: findUser.shift.startTime, 
+                    endTime: findUser.shift.endTime 
+                },
+                position: findUser.position.name
             }
         })
     } catch (error) {

@@ -6,8 +6,12 @@ import {Formik, Form, ErrorMessage, Field} from 'formik';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { setAuth } from '@/redux/slices/authSlice';
 
 export default function AuthPage(){
+
+    const dispatch = useDispatch()
 
     const {mutate: mutationAuth} = useMutation({
         mutationFn: async({username, password}: {username: string, password: string}) => {
@@ -19,6 +23,7 @@ export default function AuthPage(){
             )
         },
         onSuccess: (response) => {
+            dispatch(setAuth(response.data.data))
             localStorage.setItem('tkn', response.data.data.token)
             toast.success(response.data.message)
         }, 
