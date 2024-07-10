@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { axiosInstance } from '@/utils/axiosInstance'
 
 export const useGetShiftsAndPositions = () => {
     // Paralel
     const { data: dataShifts, isError: isErrorShifts } = useQuery({
         queryKey: ['get-shifts'],
         queryFn: async() => {
-            const res = await axios.get('http://localhost:8000/shifts')
+            const res = await axiosInstance.get('/shifts')
             return res.data.data
         }
     })
@@ -14,7 +14,7 @@ export const useGetShiftsAndPositions = () => {
     const { data: dataPositions, isError: isErrorPositions } = useQuery({
         queryKey: ['get-positions'],
         queryFn: async() => {
-            const res = await axios.get('http://localhost:8000/positions')
+            const res = await axiosInstance.get('/positions')
             return res.data.data
         }
     })

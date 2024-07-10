@@ -1,6 +1,4 @@
 'use client';
-import Image from 'next/image'
-import styles from './page.module.css'
 import { IoCalendarOutline, IoReceiptSharp, IoPerson } from 'react-icons/io5';
 import { HiOutlineClock, HiMiniClock } from 'react-icons/hi2';
 import { IoIosListBox } from 'react-icons/io';
@@ -12,6 +10,7 @@ export default function Home() {
 
   const auth = useSelector((state: any) => state.auth.auth)
   console.log(auth)
+  
   return (
     <main className='flex justify-center px-10'>
       <section className='w-[600px] py-10'>
@@ -24,9 +23,14 @@ export default function Home() {
         <section className='mt-10 bg-gray-100 px-5 py-5 rounded rounded-lg'>
           <div className='flex items-center gap-5'>
             <IoCalendarOutline className='text-xl font-bold' />
-            <h1 className='text-xl font-bold'>
-              {lightFormat(new Date(), 'dd-MM-yyyy')} ({lightFormat(auth?.shift?.startTime, 'HH:mm')} - {lightFormat(auth?.shift?.endTime, 'HH:mm')})
-            </h1>
+            {
+              auth === null?
+                <h1>-</h1>
+              :
+                <h1 className='text-xl font-bold'>
+                  {lightFormat(new Date(), 'dd-MM-yyyy')} ({lightFormat(auth?.shift?.startTime, 'HH:mm')} - {lightFormat(auth?.shift?.endTime, 'HH:mm')})
+                </h1>
+            }
           </div>
           <div className='mt-3 flex items-center gap-3'>
             <button className='w-full flex items-center gap-3 bg-white rounded-md p-3'>

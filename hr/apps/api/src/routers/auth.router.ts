@@ -9,6 +9,6 @@ import { authorizeHR } from '@/middleware/roleVerify';
 
 router.post('/', authValidation, auth) // /auth/
 router.post('/register-staff', tokenVerify, authorizeHR, registerStaff) // /auth/register-staff
-router.get('/keep', tokenVerify, keepAuth)
+router.get('/', tokenVerify, keepAuth)
 
 export default router;

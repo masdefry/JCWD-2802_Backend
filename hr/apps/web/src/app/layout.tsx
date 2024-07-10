@@ -7,6 +7,7 @@ import TanstackProvider from '@/providers/tanstackProvider';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ReduxProvider from '@/providers/reduxProvider';
+import AuthProvider from '@/providers/authProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,14 +24,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ReduxProvider>
-          <ToastContainer />
-          <TanstackProvider>
-            <Header />
-              {children}
-            {/* <Footer /> */}
-          </TanstackProvider>
-        </ReduxProvider>
+        <TanstackProvider>
+          <ReduxProvider>
+            <AuthProvider>
+              <ToastContainer />
+                <Header />
+                  {children}
+                {/* <Footer /> */}
+            </AuthProvider>
+          </ReduxProvider>
+        </TanstackProvider>
       </body>
     </html>
   );

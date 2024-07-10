@@ -27,6 +27,7 @@ model User {
   email     String     @db.VarChar(50)
   password  String 
   role      Role
+  isVerified Boolean @default(false)
 
   shiftId     Int
   shift       Shift     @relation(fields: [shiftId], references: [id])
