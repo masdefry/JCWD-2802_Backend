@@ -8,10 +8,12 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { setAuth } from '@/redux/slices/authSlice';
+import { useRouter } from 'next/navigation';
 
 export default function AuthPage(){
 
     const dispatch = useDispatch()
+    const router = useRouter()
 
     const {mutate: mutationAuth} = useMutation({
         mutationFn: async({username, password}: {username: string, password: string}) => {
@@ -26,6 +28,8 @@ export default function AuthPage(){
             dispatch(setAuth(response.data.data))
             localStorage.setItem('tkn', response.data.data.token)
             toast.success(response.data.message)
+            router.push('/')
+
         }, 
         onError: (error) => {
             toast.error(error.response.data.message)

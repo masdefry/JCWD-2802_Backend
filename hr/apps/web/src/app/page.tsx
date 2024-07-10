@@ -1,16 +1,22 @@
+'use client';
 import Image from 'next/image'
 import styles from './page.module.css'
 import { IoCalendarOutline, IoReceiptSharp, IoPerson } from 'react-icons/io5';
 import { HiOutlineClock, HiMiniClock } from 'react-icons/hi2';
 import { IoIosListBox } from 'react-icons/io';
 import { BsCalendar2MinusFill } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
 
 export default function Home() {
+
+  const auth = useSelector((state: any) => state.auth.auth)
+  console.log(auth)
+
   return (
     <main className='flex justify-center px-10'>
       <section className='w-[600px] py-10'>
         <h1 className='text-2xl font-bold'>
-          Good, Morning User01.
+          Good, Morning {auth?.firstName}.
         </h1>
         <p>
           Dont miss your attendance today!
