@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import {prisma} from '../../connection';
 import { comparePassword, hashPassword } from '@/helper/hashPassword';
 import { createToken } from '@/helper/createToken';
-import { find } from '@reduxjs/toolkit/dist/utils';
 
 export const auth = async(req: Request, res: Response, next: NextFunction) => {
     try {
@@ -19,7 +18,7 @@ export const auth = async(req: Request, res: Response, next: NextFunction) => {
                 position: true
             }
         })
-        console.log(findUser)
+
         if(findUser === null) throw { message: 'Username & Password Doesnt Match', status: 401 }
         
         const isPasswordMatch = await comparePassword(password, findUser.password)
@@ -87,6 +86,42 @@ export const registerStaff = async(req: Request, res: Response, next: NextFuncti
             error: false, 
             message: 'Create Staff Success',
             data: {}
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const keepAuth = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const {userId} = req.body 
+
+        const findUser = await prisma.user.findFirst({
+            where: {
+                id: userId
+            }, 
+            include: {
+                shift: true, 
+                position: true
+            }
+        })
+
+        if(findUser === null) throw { message: 'Unauthorized!', status: 401 }
+
+        res.status(200).send({
+            error: false, 
+            message: 'Authentication Success!', 
+            data: {
+                firstName: findUser.firstName, 
+                lastName: findUser.lastName,
+                email: findUser.email,
+                role: findUser.role, 
+                shift: {
+                    startTime: findUser.shift.startTime, 
+                    endTime: findUser.shift.endTime 
+                },
+                position: findUser.position.name
+            }
         })
     } catch (error) {
         next(error)

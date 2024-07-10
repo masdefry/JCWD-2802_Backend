@@ -6,12 +6,12 @@ import { HiOutlineClock, HiMiniClock } from 'react-icons/hi2';
 import { IoIosListBox } from 'react-icons/io';
 import { BsCalendar2MinusFill } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
+import { lightFormat } from 'date-fns';
 
 export default function Home() {
 
   const auth = useSelector((state: any) => state.auth.auth)
   console.log(auth)
-
   return (
     <main className='flex justify-center px-10'>
       <section className='w-[600px] py-10'>
@@ -25,7 +25,7 @@ export default function Home() {
           <div className='flex items-center gap-5'>
             <IoCalendarOutline className='text-xl font-bold' />
             <h1 className='text-xl font-bold'>
-              09 July 2024 (09:00 - 18:00)
+              {lightFormat(new Date(), 'dd-MM-yyyy')} ({lightFormat(auth?.shift?.startTime, 'HH:mm')} - {lightFormat(auth?.shift?.endTime, 'HH:mm')})
             </h1>
           </div>
           <div className='mt-3 flex items-center gap-3'>
