@@ -4,6 +4,7 @@ import { verificationSchema } from '../../../../features/auth/verification/schem
 import { CiLock } from 'react-icons/ci';
 import { usePatchVerification } from '@/features/auth/verification/hooks/usePatchVerification'
 import { useRouter } from 'next/navigation';
+import { useLayoutEffect } from 'react';
  
 export default function AuthVerificationPage({params}: any){
 

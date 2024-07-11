@@ -3,6 +3,8 @@ import {prisma} from '../../connection';
 import { comparePassword, hashPassword } from '@/helper/hashPassword';
 import { createToken } from '@/helper/createToken';
 import { transporter } from '@/helper/transporter';
+import fs from 'fs';
+import Handlebars from 'handlebars';
 
 export const auth = async(req: Request, res: Response, next: NextFunction) => {
     try {
@@ -86,11 +88,15 @@ export const registerStaff = async(req: Request, res: Response, next: NextFuncti
         // role didapat dari req.body
         // createdUser.id didapat ketika proses create prisma.user nya berhasil
         const token = createToken({userId: createdUser.id, userRole: role})
+
+        const template = fs.readFileSync('src/public/email.html', 'utf-8')
+        let compiledTemplate: any = Handlebars.compile(template)
+        compiledTemplate = compiledTemplate({insertToken: token, insertName: createdUser.firstName})
         
         await transporter.sendMail({
             to: email, 
             subject: 'Welcome to Our Company', 
-            html: `http://localhost:3000/auth/verification/${token}`
+            html: compiledTemplate
         })
 
         res.status(201).send({

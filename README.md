@@ -130,4 +130,10 @@ Hello, Student(s) JCWD-2802!
 
                 - Oauth
 
-                -
++ PR
+        1. Lakukan Validasi Saat Login. Hanya User dengan Status Verified Saja yang Boleh Login
+
+        2. Proteksi Halaman Register Staff. Make Sure Hanya Role = "STAFF" Saja yang Bisa Mengakses
+
+        3. Buatlah Project API Baru. Dengan Schema Prisma Product & Product Images. 
+           Product 1 - M Product Images

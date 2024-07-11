@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <main>
+    <section class="bg-red-500 px-5 py-5">
+        <h1 class="text-white text-2xl font-bold">
+            Talenta.
+        </h1>
+    </section>
+    <section class="flex flex-col items-center py-10">
+        <h1 class="font-bold text-3xl">
+            Welcome, Our New Employee {{insertName}}!
+        </h1>
+        <p class="max-w-[500px] text-justify">
+            Now, you are part of <b>Purwadhika</b> teams!
+            You can setup your new employee account by click
+            link below: 
+        </p>
+        <br />
+        <a>
+            http://localhost:3000/auth/verification/{{insertToken}}
+        </a>
+        <br />
+        <p class="max-w-[500px] text-justify">
+            If need help, you can contact our HR Team. Thank you! 
+        </p>
+    </section>
+  </main>
+</body>
+</html>
