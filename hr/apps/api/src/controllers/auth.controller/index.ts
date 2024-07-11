@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import {prisma} from '../../connection';
 import { comparePassword, hashPassword } from '@/helper/hashPassword';
 import { createToken } from '@/helper/createToken';
+import { transporter } from '@/helper/transporter';
 
 export const auth = async(req: Request, res: Response, next: NextFunction) => {
     try {
@@ -70,7 +71,7 @@ export const registerStaff = async(req: Request, res: Response, next: NextFuncti
             || 
         (role === 'STAFF' && findPosition?.name === 'HR')) throw { message: 'Invalid Position', status: 400 }
         
-        await prisma.user.create({
+        const createdUser = await prisma.user.create({
             data: {
                 firstName, 
                 lastName, 
@@ -80,6 +81,16 @@ export const registerStaff = async(req: Request, res: Response, next: NextFuncti
                 positionId: parseInt(position), 
                 shiftId: parseInt(shift)
             }
+        })
+
+        // role didapat dari req.body
+        // createdUser.id didapat ketika proses create prisma.user nya berhasil
+        const token = createToken({userId: createdUser.id, userRole: role})
+        
+        await transporter.sendMail({
+            to: email, 
+            subject: 'Welcome to Our Company', 
+            html: `http://localhost:3000/auth/verification/${token}`
         })
 
         res.status(201).send({
