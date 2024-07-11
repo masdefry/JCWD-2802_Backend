@@ -138,3 +138,35 @@ export const keepAuth = async(req: Request, res: Response, next: NextFunction) =
         next(error)
     }
 }
+
+export const verification = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { password, userId } = req.body
+
+        const findUser = await prisma.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
+
+        if(!findUser) throw { message: 'User Not Found', status: 404 }
+
+        await prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                password: await hashPassword(password), 
+                isVerified: true
+            }
+        })
+
+        res.status(201).send({
+            error: false, 
+            message: 'Verification & Update Password Success', 
+            data: {}
+        })
+    } catch (error) {
+        next(error)
+    }
+}
