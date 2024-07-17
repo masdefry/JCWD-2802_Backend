@@ -21,28 +21,28 @@ model Sample {
 }
 
 model User {
-  id        String     @id @default(cuid())
-  firstName String     @db.VarChar(25)
-  lastName  String     @db.VarChar(25)
-  email     String     @db.VarChar(50)
-  password  String 
-  role      Role
+  id         String  @id @default(cuid())
+  firstName  String  @db.VarChar(25)
+  lastName   String  @db.VarChar(25)
+  email      String  @db.VarChar(50)
+  password   String
+  role       Role
   isVerified Boolean @default(false)
 
-  shiftId     Int
-  shift       Shift     @relation(fields: [shiftId], references: [id])
+  shiftId Int
+  shift   Shift @relation(fields: [shiftId], references: [id])
 
   attendances Attendance[]
 
-  positionId  Int
-  position    Position  @relation(fields: [positionId], references: [id])
+  positionId Int
+  position   Position @relation(fields: [positionId], references: [id])
 
   leavesRequested Leave[] @relation("LeavesRequested")
   leavesApproved  Leave[] @relation("LeavesApproved")
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  deletedAt  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@map("users")
 }
@@ -58,10 +58,10 @@ model Shift {
   startTime DateTime @db.Time()
   endTime   DateTime @db.Time()
 
-  users     User[]
+  users User[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   @@map("shifts")
@@ -74,25 +74,25 @@ model Attendance {
   clockOut  DateTime @db.Time()
   deduction Int
 
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   @@map("attendances")
 }
 
 model Position {
-  id        Int      @id @default(autoincrement())
-  name      String
-  salary    Int
+  id     Int    @id @default(autoincrement())
+  name   String
+  salary Int
 
-  users     User[]
+  users User[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   @@map("positions")
@@ -104,15 +104,15 @@ model Leave {
   endDate        DateTime       @db.Date
   approvalStatus ApprovalStatus
 
-  userIdRequest  String
-  userRequest    User           @relation("LeavesRequested", fields: [userIdRequest], references: [id])
+  userIdRequest String
+  userRequest   User   @relation("LeavesRequested", fields: [userIdRequest], references: [id])
 
   userIdApproval String
-  userApproval   User           @relation("LeavesApproved", fields: [userIdApproval], references: [id])
+  userApproval   User   @relation("LeavesApproved", fields: [userIdApproval], references: [id])
 
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  deletedAt      DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@map("leaves")
 }

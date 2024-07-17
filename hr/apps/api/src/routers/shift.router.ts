@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const router = Router() 
 
-import { findAllShifts } from '@/controllers/sift.controller';
+import { findAllShifts } from '@/controllers/shift.controller';
 
 router.get('/', findAllShifts)
 

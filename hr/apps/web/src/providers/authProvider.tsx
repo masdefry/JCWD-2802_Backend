@@ -1,5 +1,5 @@
 'use client'
-import { ReactNode, FC, useEffect } from 'react';
+import { ReactNode, FC, useLayoutEffect } from 'react';
 import {useMutation} from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 import { setAuth } from '@/redux/slices/authSlice';
@@ -26,7 +26,7 @@ const AuthProvider: FC<Props> = ({children}) => {
         }
     })
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         mutationKeepAuth()
     }, [])
 

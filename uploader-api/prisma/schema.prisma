@@ -13,20 +13,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
-  id        String    @id @default(cuid())
-  username  String    @unique @db.VarChar(15)
-  email     String    @unique @db.VarChar(50)
-  password  String
-  role      Role      @default(USER)
-  isVerified Boolean @default(false)
+model Product {
+  id    String @id @default(cuid())
+  name  String @db.VarChar(50)
+  price Int
+
+  product_images ProductImage[]
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  @@map("products")
 }
 
-enum Role {
-  USER
-  ADMIN
-  SUPER_ADMIN
+model ProductImage {
+  id  Int    @id @default(autoincrement())
+  url String
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("product_images")
 }

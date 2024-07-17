@@ -1,6 +1,6 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
-import router from './router';
+import router from './routers';
 
 const app: Express = express();
 app.use(express.json()) // [WAJIB!] Initialize Body Parser: Supaya Dapat Mengambil Request Data dari Body
