@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploader = void 0;
 const multer_1 = __importDefault(require("multer"));
 const fs_1 = __importDefault(require("fs"));
-const uploader = (filePrefix, folderName, filelimit) => {
+const uploader = (filePrefix, folderName, fileAccepted, filelimit) => {
     const defaultDir = 'src/public/';
     const storage = multer_1.default.diskStorage({
         destination: (req, file, cb) => {
@@ -27,10 +27,12 @@ const uploader = (filePrefix, folderName, filelimit) => {
         },
     });
     const fileFilter = (req, file, cb) => {
-        console.log('fileFilter');
-        cb(null, true);
+        const splitOriginalName = file.originalname.split('.'); // [xxx, png]
+        const fileExtension = splitOriginalName[splitOriginalName.length - 1];
+        if (fileAccepted.includes(fileExtension))
+            return cb(null, true);
+        cb(new Error(`File Not Accepted. File Allowed ${fileAccepted.join(', ')}`));
     };
-    const limits = { fileSize: filelimit || 1 * 1024 * 1024 };
-    return (0, multer_1.default)({ storage, fileFilter, limits });
+    return (0, multer_1.default)({ storage, fileFilter, limits: { fileSize: filelimit } });
 };
 exports.uploader = uploader;

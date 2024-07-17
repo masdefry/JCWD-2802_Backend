@@ -6,7 +6,7 @@ import fs from 'fs';
 type DestinationCallback = (error: Error | null, destination: string) => void;
 type FilenameCallback = (error: Error | null, filename: string) => void;
 
-export const uploader = (filePrefix: string, folderName: string, filelimit?: number) => {
+export const uploader = (filePrefix: string, folderName: string, fileAccepted: string[], filelimit: number) => {
 
     const defaultDir = 'src/public/';
 
@@ -35,11 +35,13 @@ export const uploader = (filePrefix: string, folderName: string, filelimit?: num
     });
 
     const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
-        console.log('fileFilter')
-        cb(null, true)
+        const splitOriginalName = file.originalname.split('.') // [xxx, png]
+        const fileExtension = splitOriginalName[splitOriginalName.length-1]
+
+        if(fileAccepted.includes(fileExtension)) return cb(null, true)
+
+        cb(new Error(`File Not Accepted. File Allowed ${fileAccepted.join(', ')}`))
     };
 
-    const limits = { fileSize: filelimit || 1 * 1024 * 1024 };
-
-    return multer({ storage, fileFilter, limits });
+    return multer({ storage, fileFilter, limits: {fileSize: filelimit} });
 };
