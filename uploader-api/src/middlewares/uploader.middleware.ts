@@ -12,6 +12,7 @@ export const uploader = (filePrefix: string, folderName: string, filelimit?: num
 
     const storage = multer.diskStorage({
         destination: (req: Request, file: Express.Multer.File, cb: DestinationCallback) => {
+
             const destination = defaultDir + folderName ; // src/public/Images
 
             // Pengecekan Directory di Public
@@ -25,8 +26,11 @@ export const uploader = (filePrefix: string, folderName: string, filelimit?: num
         },
 
         filename: (req: Request, file: Express.Multer.File, callback: FilenameCallback) => {
-            // console.log(req)
-            callback(null, 'Bebas.jpg')
+            const uniqueName = Date.now()
+            const splitOriginalName = file.originalname.split('.') // [xxx, png]
+            const fileExtension = splitOriginalName[splitOriginalName.length-1]
+            const fileName = `${filePrefix}-${uniqueName}.${fileExtension}` // IMG-Date.now().fileExtension
+            callback(null, fileName)
         },
     });
 

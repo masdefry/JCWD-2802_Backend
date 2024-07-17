@@ -19,8 +19,11 @@ const uploader = (filePrefix, folderName, filelimit) => {
             cb(null, destination);
         },
         filename: (req, file, callback) => {
-            // console.log(req)
-            callback(null, 'Bebas.jpg');
+            const uniqueName = Date.now();
+            const splitOriginalName = file.originalname.split('.'); // [xxx, png]
+            const fileExtension = splitOriginalName[splitOriginalName.length - 1];
+            const fileName = `${filePrefix}-${uniqueName}.${fileExtension}`; // IMG-Date.now().fileExtension
+            callback(null, fileName);
         },
     });
     const fileFilter = (req, file, cb) => {
