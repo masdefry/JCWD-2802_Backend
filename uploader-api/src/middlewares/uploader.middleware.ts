@@ -1,6 +1,5 @@
 import { Request } from 'express';
 import multer, { FileFilterCallback } from 'multer';
-import { join } from 'path';
 import fs from 'fs';
 
 type DestinationCallback = (error: Error | null, destination: string) => void;
