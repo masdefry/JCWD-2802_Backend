@@ -14,6 +14,12 @@ export const createProduct = async(req: Request, res: Response, next: NextFuncti
             price, 
             files
         })
+
+        res.status(201).send({
+            error: false, 
+            message: 'Create Product Success', 
+            data: {}
+        })
     } catch (error) {
         next(error)
     }

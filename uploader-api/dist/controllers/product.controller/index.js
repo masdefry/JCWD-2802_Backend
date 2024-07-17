@@ -23,6 +23,11 @@ const createProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             price,
             files
         });
+        res.status(201).send({
+            error: false,
+            message: 'Create Product Success',
+            data: {}
+        });
     }
     catch (error) {
         next(error);

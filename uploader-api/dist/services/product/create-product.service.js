@@ -12,28 +12,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createProductService = void 0;
 const connection_1 = require("../../connection");
 const createProductService = (_a) => __awaiter(void 0, [_a], void 0, function* ({ name, price, files }) {
-    const createdProduct = yield connection_1.prisma.product.create({
-        data: {
-            name,
-            price: parseInt(price)
-        }
-    });
-    /*
-    files.forEach(async(item: any) => {
-        await prisma.productImage.create({
+    yield connection_1.prisma.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+        const createdProduct = yield tx.product.create({
             data: {
-                url: item.filename,
-                productId: createdProduct.id
+                name,
+                price: parseInt(price)
             }
+        });
+        /*
+        files.forEach(async(item: any) => {
+            await prisma.productImage.create({
+                data: {
+                    url: item.filename,
+                    productId: createdProduct.id
+                }
+            })
         })
-    })
-    */
-    const productImage = [];
-    files.forEach((item) => __awaiter(void 0, void 0, void 0, function* () {
-        productImage.push({ url: item.filename, productId: createdProduct.id });
+        */
+        const productImage = [];
+        files.forEach((item) => __awaiter(void 0, void 0, void 0, function* () {
+            productImage.push({ url: item.path, productId: createdProduct.id });
+        }));
+        yield tx.productImage.createMany({
+            data: productImage
+        });
     }));
-    yield connection_1.prisma.productImage.createMany({
-        data: productImage
-    });
 });
 exports.createProductService = createProductService;
