@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { createProductService } from '../../services/product/create-product.service';
-
+import { findProductsService } from '../../services/product/find-products.service';
 import fs from 'fs';
 
 export const createProduct = async(req: Request, res: Response, next: NextFunction) => {
@@ -29,6 +29,20 @@ export const createProduct = async(req: Request, res: Response, next: NextFuncti
             fs.rmSync(item.path)
         })
 
+        next(error)
+    }
+}
+
+export const findProducts = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const products = await findProductsService()
+
+        res.status(200).send({
+            error: false, 
+            message: 'Get Products Success', 
+            data: products
+        })
+    } catch (error) {
         next(error)
     }
 }

@@ -7,8 +7,8 @@ export const createProductSchema = Yup.object().shape({
     .mixed()
     .required('Choose at least one image')
     .test('fileSize', 'File size is too large (maximum file size is 236Kb)', value =>  {
-        if(value && value?.length > 0){
-            for(let item of value){
+        if(value && (<any>value)?.length > 0){
+            for(let item of <any>value){
                 if(item.size > 236000) return false
             }
 

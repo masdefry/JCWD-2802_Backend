@@ -12,8 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createProduct = void 0;
+exports.findProducts = exports.createProduct = void 0;
 const create_product_service_1 = require("../../services/product/create-product.service");
+const find_products_service_1 = require("../../services/product/find-products.service");
 const fs_1 = __importDefault(require("fs"));
 const createProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
@@ -42,3 +43,17 @@ const createProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.createProduct = createProduct;
+const findProducts = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const products = yield (0, find_products_service_1.findProductsService)();
+        res.status(200).send({
+            error: false,
+            message: 'Get Products Success',
+            data: products
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.findProducts = findProducts;
