@@ -8,11 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createProduct = void 0;
 const create_product_service_1 = require("../../services/product/create-product.service");
+const fs_1 = __importDefault(require("fs"));
 const createProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     try {
         const { name, price } = JSON.parse(req.body.product);
         if (!req.files)
@@ -30,6 +34,10 @@ const createProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, func
         });
     }
     catch (error) {
+        const files = Array.isArray(req.files) ? req.files : (_b = req === null || req === void 0 ? void 0 : req.files) === null || _b === void 0 ? void 0 : _b.products;
+        files === null || files === void 0 ? void 0 : files.forEach((item) => {
+            fs_1.default.rmSync(item.path);
+        });
         next(error);
     }
 });
