@@ -1,8 +1,11 @@
 'use client';
 import { Formik, Form, ErrorMessage, Field } from 'formik';
-import { createProductSchema } from '@/features/master-data/products/createProductSchema';
+import { createProductSchema } from '@/features/master-data/products/schemas/createProductSchema';
+import { useCreateProductHooks } from '@/features/master-data/products/hooks/useCreateProductHooks';
 
 export default function Page() {
+    const { mutationCreateProduct } = useCreateProductHooks()
+
     return (
         <main className='flex justify-center px-10'>
             <section id='form-login' className='py-10'>
@@ -17,8 +20,16 @@ export default function Page() {
                         images: []
                     }}
                     onSubmit={(values) => {
-                        console.log(values)
-                        // Handle form submission
+                        const fd = new FormData()
+                        fd.append('product', JSON.stringify({
+                            name: values.name, 
+                            price: values.price
+                        }))
+                        for(let item of values.images){
+                            fd.append('products', item)
+                        }
+                        
+                        mutationCreateProduct({fd})
                     }}
                 >
                     {({ setFieldValue }) => (
