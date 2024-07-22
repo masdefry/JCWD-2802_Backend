@@ -2,12 +2,17 @@
 import { Formik, Form, ErrorMessage, Field } from 'formik';
 import { createProductSchema } from '@/features/master-data/products/schemas/createProductSchema';
 import { useCreateProductHooks } from '@/features/master-data/products/hooks/useCreateProductHooks';
+import { useGetProductsHooks } from '@/features/master-data/products/hooks/useGetProductsHooks';
+import Image from 'next/Image'
 
 export default function Page() {
     const { mutationCreateProduct } = useCreateProductHooks()
+    const { dataProducts } = useGetProductsHooks()
+    console.log(dataProducts)
 
+    if(!dataProducts) return <h1>Loading...</h1>
     return (
-        <main className='flex justify-center px-10'>
+        <main className='flex flex-col items-center px-10'>
             <section id='form-login' className='py-10'>
                 <h1 className='font-bold text-2xl'>
                     Create Product
@@ -65,6 +70,28 @@ export default function Page() {
                         </Form>
                     )}
                 </Formik>
+            </section>
+            <section>
+                {dataProducts?.map((item, index) => {
+                    return(
+                        <div>
+                            <h1>
+                                {item?.name}
+                            </h1>
+                            {
+                                item.product_images.length > 0?
+                                    <Image 
+                                        src={`http://localhost:5000/${item.product_images[0].url}`}
+                                        width={100}
+                                        height={100}
+                                        alt={'Image Product'}
+                                    />
+                                :  
+                                    null
+                            }
+                        </div>
+                    )
+                })}
             </section>
         </main>
     );
